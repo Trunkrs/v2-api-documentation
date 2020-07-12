@@ -1,0 +1,298 @@
+openapi: 3.0.0
+info:
+  title: Client API
+  version: '2.0'
+  contact:
+    name: Hidde Stokvis
+    url: 'https://trunkrs.nl'
+    email: tech.support@trunkrs.nl
+  description: Customer facing API version 2
+servers:
+  - url: 'https://api.trunkrs.nl/api/v2'
+    description: production
+  - url: 'https://staging-api.trunkrs.nl/api/v2'
+    description: staging
+paths:
+  /shipments:
+    get:
+      summary: List shipments
+      tags: []
+      operationId: get-shipment
+      description: List all your shipments
+      parameters:
+        - schema:
+            type: number
+            default: 0
+            minimum: 0
+          in: query
+          name: 'page[offset]'
+          description: A number of shipments to offset when fetching
+        - schema:
+            type: number
+            default: 0
+            minimum: 0
+            maximum: 100
+          in: query
+          name: 'page[limit]'
+          description: Limit the results to this number
+        - schema:
+            type: string
+            example: 'recipient,-trunkrs_nr'
+            default: '-trunkrs_nr'
+            pattern: '([a-zA-Z_-]+),?'
+          in: query
+          name: sort
+          description: comma seperated list to sort fields by (prepend with - for decending)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  links:
+                    $ref: '#/components/schemas/Links'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Shipment'
+                required:
+                  - links
+                  - data
+    parameters: []
+components:
+  schemas:
+    Links:
+      title: Links
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/Link'
+        first:
+          $ref: '#/components/schemas/Link'
+        last:
+          $ref: '#/components/schemas/Link'
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+      required:
+        - self
+    Link:
+      title: Link
+      description: ''
+      oneOf:
+        - type: object
+          properties:
+            href:
+              type: string
+            meta:
+              type: object
+        - type: string
+    Shipment:
+      title: Shipment
+      type: object
+      properties:
+        trunkrs_nr:
+          type: string
+          description: The Trunkrs Number is the main identifier for a shipment
+        order_reference:
+          type: string
+          description: The internal order reference provided by you
+        label:
+          $ref: '#/components/schemas/Label'
+        sender:
+          $ref: '#/components/schemas/Location'
+        recipient:
+          $ref: '#/components/schemas/Location'
+        parcels:
+          type: array
+          items:
+            $ref: '#/components/schemas/Parcel'
+        time_slot_id:
+          type: number
+          description: 'ID of a time slot, if none provided first possible time slot will be used'
+        state:
+          $ref: '#/components/schemas/State'
+      required:
+        - trunkrs_nr
+        - order_reference
+        - label
+        - sender
+        - recipient
+        - parcels
+    Label:
+      title: Label
+      type: object
+      properties:
+        pdf:
+          type: string
+          description: 'Link to the PDF. Size is 6" x 4"'
+        zpl:
+          type: string
+          description: 'Label in Zebra format. Size is 6" x 4" at 203DPI'
+      required:
+        - pdf
+        - zpl
+    Location:
+      title: Location
+      type: object
+      properties:
+        name:
+          type: string
+        company_name:
+          type: string
+        email_address:
+          type: string
+        phone_number:
+          type: string
+        address:
+          type: string
+        postal_code:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+          enum:
+            - NL
+            - BE
+        additional_remarks:
+          type: string
+      required:
+        - name
+        - address
+        - postal_code
+        - city
+        - country
+    Parcel:
+      title: Parcel
+      type: object
+      properties:
+        description:
+          type: string
+        goods:
+          type: array
+          items:
+            $ref: '#/components/schemas/Good'
+        weight:
+          type: number
+          description: Weight is provided in KG
+        size:
+          $ref: '#/components/schemas/Size'
+        reference:
+          type: string
+          description: Your internal reference
+      required:
+        - weight
+    Size:
+      title: Size
+      type: object
+      properties:
+        width:
+          type: number
+          description: Width is provided in centimeters
+        height:
+          type: number
+          description: Height is provided in centimeters
+        depth:
+          type: number
+          description: Depth is provided in centimeters
+    Good:
+      title: Good
+      type: object
+      properties:
+        name:
+          type: string
+        reference:
+          type: string
+          description: your internal reference
+        additional_remarks:
+          type: string
+      required:
+        - name
+        - reference
+    TimeSlot:
+      title: TimeSlot
+      type: object
+      properties:
+        id:
+          type: string
+        merchant:
+          $ref: '#/components/schemas/Location'
+        cut_off_time:
+          type: string
+          format: date-time
+        collection_window:
+          $ref: '#/components/schemas/TimeWindow'
+        delivery_window:
+          $ref: '#/components/schemas/TimeWindow'
+      required:
+        - id
+        - merchant
+        - cut_off_time
+        - collection_window
+        - delivery_window
+    TimeWindow:
+      title: TimeWindow
+      type: object
+      properties:
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+      required:
+        - start
+        - end
+    State:
+      title: State
+      type: object
+      properties:
+        code:
+          type: string
+          enum:
+            - DATA_RECEIVED
+            - DATA_PROCESSED
+            - SHIPMENT_SORTED
+            - SHIPMENT_SORTED_AT_SUB_DEPOT
+            - SHIPMENT_ACCEPTED_BY_DRIVER
+            - SHIPMENT_DELIVERED
+            - SHIPMENT_DELIVERED_TO_NEIGHBOR
+            - SHIPMENT_NOT_DELIVERED
+            - EXCEPTION_SHIPMENT_NOT_ARRIVED
+            - EXCEPTION_SHIPMENT_MISS_SORTED
+            - EXCEPTION_SHIPMENT_DECLINED_BY_DRIVER
+            - EXCEPTION_SHIPMENT_MISSING
+            - EXCEPTION_SHIPMENT_LOST
+            - EXCEPTION_SHIPMENT_CANCELLED_BY_SENDER
+            - EXCEPTION_SHIPMENT_CANCELLED_BY_TRUNKRS
+        reason_code:
+          type: string
+          enum:
+            - ADDRESS_NOT_FOUND
+            - BUSINESS_CLOSED
+            - RECIPIENT_NOT_AT_HOME
+            - NO_TIME_LEFT_IN_TIMESLOT
+            - REFUSED_BY_CUSTOMER
+            - DELIVERY_DAMAGED
+            - DRIVER_INVOLVED_IN_ACCIDENT
+            - BAD_ADDRESS
+            - EXTREME_WEATHER_CONDITIONS
+            - PARCEL_MISSING
+            - DELIVER_ADDRESS_NOT_ACCESSIBLE
+        timestamp:
+          type: string
+          format: date-time
+      required:
+        - code
+        - timestamp
+  securitySchemes:
+    x-api-clientsecret:
+      name: Client Secret
+      type: apiKey
+      in: header
+security:
+  - x-api-clientsecret: []
