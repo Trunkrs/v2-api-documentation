@@ -16,7 +16,8 @@ paths:
   /shipments:
     get:
       summary: List shipments
-      tags: []
+      tags:
+        - shipment
       operationId: get-shipment
       description: List all your shipments
       parameters:
