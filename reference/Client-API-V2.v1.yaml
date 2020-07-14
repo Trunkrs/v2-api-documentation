@@ -62,6 +62,57 @@ paths:
                   - links
                   - data
     parameters: []
+    post:
+      summary: ''
+      operationId: post-shipments
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  links:
+                    $ref: '#/components/schemas/Links'
+                  data:
+                    $ref: '#/components/schemas/Shipment'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderReference:
+                  type: string
+                  description: 'Internal order reference provided by customer, this must be unique'
+                sender:
+                  $ref: '#/components/schemas/Location'
+                recipient:
+                  $ref: '#/components/schemas/Location'
+                parcel:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Parcel'
+                timeSlotId:
+                  type: number
+                  description: 'If no time slot id provided, we will find the first open time slot'
+                features:
+                  $ref: '#/components/schemas/Features'
+              required:
+                - recipient
+                - parcel
+        description: |-
+          The order reference needs to be a completely unique number. We recommend pre-pending it with your company name or a shortcut of your company name. Alternatively it can be used as a barcode for custom labels.
+
+          The sender object lets you define a sender within your organization (for instance multi store retail company). If no sender is specified we will use your global account details to populate the fields.
+
+          Every shipment must contain at least 1 parcel, for a multi colli shipment you can provide multiple parcels here.
+
+          You can only provide the time slot id of an open time slot, when a time slot is already closed the request will fail. If no time slot id is provided we will find the first open time slot available.
+
+          Features allow you to customize the shipping experience. Please note that some features might add additional costs to the shipment. Please contact sales for more details: sales@trunkrs.nl
+      description: create a new shipment
 components:
   schemas:
     Links:
@@ -95,10 +146,10 @@ components:
       title: Shipment
       type: object
       properties:
-        trunkrs_nr:
+        trunkrsNr:
           type: string
           description: The Trunkrs Number is the main identifier for a shipment
-        order_reference:
+        orderReference:
           type: string
           description: The internal order reference provided by you
         label:
@@ -111,18 +162,24 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Parcel'
-        time_slot_id:
-          type: number
-          description: 'ID of a time slot, if none provided first possible time slot will be used'
+        timeSlot:
+          $ref: '#/components/schemas/TimeSlot'
         state:
           $ref: '#/components/schemas/State'
+        features:
+          $ref: '#/components/schemas/Features'
       required:
-        - trunkrs_nr
-        - order_reference
+        - trunkrsNr
+        - orderReference
         - label
         - sender
         - recipient
         - parcels
+        - timeSlot
+        - state
+        - features
+      x-tags:
+        - shipment
     Label:
       title: Label
       type: object
@@ -136,21 +193,22 @@ components:
       required:
         - pdf
         - zpl
+      description: ''
     Location:
       title: Location
       type: object
       properties:
         name:
           type: string
-        company_name:
+        companyName:
           type: string
-        email_address:
+        emailAddress:
           type: string
-        phone_number:
+        phoneNumber:
           type: string
         address:
           type: string
-        postal_code:
+        postalCode:
           type: string
         city:
           type: string
@@ -159,12 +217,12 @@ components:
           enum:
             - NL
             - BE
-        additional_remarks:
+        additionalRemarks:
           type: string
       required:
         - name
         - address
-        - postal_code
+        - postalCode
         - city
         - country
     Parcel:
@@ -173,7 +231,7 @@ components:
       properties:
         description:
           type: string
-        goods:
+        articles:
           type: array
           items:
             $ref: '#/components/schemas/Good'
@@ -200,16 +258,17 @@ components:
         depth:
           type: number
           description: Depth is provided in centimeters
-    Good:
-      title: Good
+    Article:
+      title: Article
       type: object
+      description: ''
       properties:
         name:
           type: string
         reference:
           type: string
           description: your internal reference
-        additional_remarks:
+        additionalRemarks:
           type: string
       required:
         - name
@@ -222,19 +281,19 @@ components:
           type: string
         merchant:
           $ref: '#/components/schemas/Location'
-        cut_off_time:
+        cutOffTime:
           type: string
           format: date-time
-        collection_window:
+        collectionWindow:
           $ref: '#/components/schemas/TimeWindow'
-        delivery_window:
+        deliveryWindow:
           $ref: '#/components/schemas/TimeWindow'
       required:
         - id
         - merchant
-        - cut_off_time
-        - collection_window
-        - delivery_window
+        - cutOffTime
+        - collectionWindow
+        - deliveryWindow
     TimeWindow:
       title: TimeWindow
       type: object
@@ -270,7 +329,7 @@ components:
             - EXCEPTION_SHIPMENT_LOST
             - EXCEPTION_SHIPMENT_CANCELLED_BY_SENDER
             - EXCEPTION_SHIPMENT_CANCELLED_BY_TRUNKRS
-        reason_code:
+        reasonCode:
           type: string
           enum:
             - ADDRESS_NOT_FOUND
@@ -290,6 +349,19 @@ components:
       required:
         - code
         - timestamp
+    Features:
+      title: Features
+      type: object
+      properties:
+        noNeighbourDelivery:
+          type: boolean
+          description: Dont deliver at neighbours (extra costs are involved)
+        noSignature:
+          type: boolean
+        foodDelivery:
+          type: boolean
+        deliverInMailBox:
+          type: boolean
   securitySchemes:
     x-api-clientsecret:
       name: Client Secret
