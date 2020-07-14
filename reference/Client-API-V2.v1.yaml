@@ -63,7 +63,7 @@ paths:
                   - data
     parameters: []
     post:
-      summary: ''
+      summary: Create shipment
       operationId: post-shipments
       responses:
         '200':
@@ -113,6 +113,8 @@ paths:
 
           Features allow you to customize the shipping experience. Please note that some features might add additional costs to the shipment. Please contact sales for more details: sales@trunkrs.nl
       description: create a new shipment
+      tags:
+        - shipment
 components:
   schemas:
     Links:
