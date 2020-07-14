@@ -221,7 +221,7 @@ paths:
       description: |-
         Get the information for a specific shipment, selected by Trunkrs Number.
 
-        **This endpoint is rate limited on 10 requests per second.**
+        **This endpoint is rate limited to 10 requests per second.**
       parameters: []
     parameters:
       - schema:
@@ -286,6 +286,149 @@ paths:
       tags:
         - shipment
       description: Cancel a specific shipment by Trunkrs Nr.
+  '/shipments/{trunkrsNr}/state':
+    parameters:
+      - schema:
+          type: string
+        name: trunkrsNr
+        in: path
+        required: true
+    get:
+      summary: Get state for specific shipment
+      tags:
+        - shipment
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  links:
+                    $ref: '#/components/schemas/Links'
+                  data:
+                    type: object
+                    properties:
+                      trunkrsNr:
+                        type: string
+                      state:
+                        $ref: '#/components/schemas/State'
+                    required:
+                      - trunkrsNr
+                      - state
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                      - UNAUTHORIZED
+                  reason:
+                    type: string
+                required:
+                  - code
+                  - reason
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                      - SHIPMENT_NOT_FOUND
+                  reason:
+                    type: string
+                required:
+                  - code
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                      - TOO_MANY_REQUESTS
+                  reason:
+                    type: string
+                required:
+                  - code
+                  - reason
+      operationId: get-shipments-trunkrsNr-state
+      description: |-
+        Get the state for a specific shipment
+
+        **this endpoint is rate limited to 10 requests per second**
+  /timeslots:
+    get:
+      summary: List time slots
+      tags:
+        - time slot
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  links:
+                    $ref: '#/components/schemas/Links'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TimeSlot'
+                required:
+                  - links
+                  - data
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                      - UNAUTHORIZED
+                  reason:
+                    type: string
+                required:
+                  - code
+                  - reason
+          headers: {}
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                      - TOO_MANY_REQUESTS
+                  reason:
+                    type: string
+                required:
+                  - code
+                  - reason
+      operationId: get-timeslots
+      description: |-
+        List all available time slots for your account
+
+        ** this endpoint is rate limited to 10 requests per second**
 components:
   schemas:
     Links:
