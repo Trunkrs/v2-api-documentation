@@ -135,6 +135,13 @@ paths:
                   description: 'If no time slot id provided, we will find the first open time slot'
                 features:
                   $ref: '#/components/schemas/Features'
+                product:
+                  type: string
+                  enum:
+                    - SAME_DAY
+                    - SAME_DAY_FOOD
+                    - SAME_DAY_FROZEN_FOOD
+                  default: SAME_DAY
               required:
                 - recipient
                 - parcel
@@ -440,7 +447,7 @@ paths:
       description: |-
         List all available time slots for your account
 
-        ** this endpoint is rate limited to 10 requests per second**
+        **this endpoint is rate limited to 10 requests per second**
       parameters:
         - schema:
             type: string
@@ -517,6 +524,267 @@ paths:
               required:
                 - postalCode
                 - country
+  /webhooks:
+    get:
+      summary: List webhooks
+      tags:
+        - webhook
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  links:
+                    $ref: '#/components/schemas/Links'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Webhook'
+                required:
+                  - links
+                  - data
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                      - UNAUTHORIZED
+                  reason:
+                    type: string
+                required:
+                  - code
+                  - reason
+      operationId: get-webhooks
+    post:
+      summary: Create webhook subscription
+      operationId: post-webhooks
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  links:
+                    $ref: '#/components/schemas/Links'
+                  data:
+                    $ref: '#/components/schemas/Webhook'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                      - UNAUTHORIZED
+                  reason:
+                    type: string
+                required:
+                  - code
+                  - reason
+        '422':
+          description: Unprocessable Entity (WebDAV)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                      - VALIDATION_ERROR
+                  reason:
+                    type: string
+                required:
+                  - code
+                  - reason
+      tags:
+        - webhook
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                header:
+                  type: object
+                  properties:
+                    key:
+                      type: string
+                      default: x-api-key
+                    token:
+                      type: string
+                event:
+                  type: string
+                  enum:
+                    - onStateUpdate
+                    - onCreation
+                    - onCancellation
+              required:
+                - url
+                - event
+  '/webhooks/{webhookId}':
+    parameters:
+      - schema:
+          type: number
+        name: webhookId
+        in: path
+        required: true
+    get:
+      summary: Get a specific webhook
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  links:
+                    $ref: '#/components/schemas/Links'
+                  data:
+                    $ref: '#/components/schemas/Webhook'
+                required:
+                  - links
+                  - data
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                      - UNAUTHORIZED
+                  reason:
+                    type: string
+                required:
+                  - code
+                  - reason
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                      - NOT_FOUND
+                  reason:
+                    type: string
+                required:
+                  - code
+                  - reason
+      operationId: get-webhooks-webhookId
+      description: ''
+      tags:
+        - webhook
+    delete:
+      summary: Unsubscribe from webhook
+      operationId: delete-webhooks-webhookId
+      responses:
+        '202':
+          description: Accepted
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                      - UNAUTHORIZED
+                  reason:
+                    type: string
+                required:
+                  - code
+                  - reason
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                      - NOT_FOUND
+                  reason:
+                    type: string
+                required:
+                  - code
+                  - reason
+      tags:
+        - webhook
+  '/webhooks/{webhookId}/test':
+    parameters:
+      - schema:
+          type: string
+        name: webhookId
+        in: path
+        required: true
+    post:
+      summary: Fire test webhook
+      operationId: post-webhooks-webhookId-test
+      responses:
+        '202':
+          description: Accepted
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                      - UNAUTHORIZED
+                  reason:
+                    type: string
+                required:
+                  - code
+                  - reason
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                      - NOT_FOUND
+                  reason:
+                    type: string
+                required:
+                  - code
+                  - reason
+      description: "Fire's dummy data to the subscribed url"
+      tags:
+        - webhook
 components:
   schemas:
     Links:
@@ -572,6 +840,8 @@ components:
           $ref: '#/components/schemas/State'
         features:
           $ref: '#/components/schemas/Features'
+        product:
+          $ref: '#/components/schemas/Product'
       required:
         - trunkrsNr
         - orderReference
@@ -582,8 +852,7 @@ components:
         - timeSlot
         - state
         - features
-      x-tags:
-        - shipment
+        - product
     Label:
       title: Label
       type: object
@@ -807,6 +1076,51 @@ components:
           type: boolean
         deliverInMailBox:
           type: boolean
+    Product:
+      title: Product
+      type: object
+      properties:
+        name:
+          type: string
+          enum:
+            - SAME_DAY
+            - SAME_DAY_FOOD
+            - SAME_DAY_FROZEN_FOOD
+        description:
+          type: string
+      required:
+        - name
+        - description
+    Webhook:
+      title: Webhook
+      type: object
+      properties:
+        url:
+          type: string
+        header:
+          type: object
+          required:
+            - key
+            - token
+          properties:
+            key:
+              type: string
+              default: x-api-key
+            token:
+              type: string
+        event:
+          type: string
+          enum:
+            - onStateUpdate
+            - onCreation
+            - onCancellation
+        id:
+          type: number
+      required:
+        - url
+        - header
+        - event
+        - id
   securitySchemes:
     x-api-clientsecret:
       name: Client Secret
