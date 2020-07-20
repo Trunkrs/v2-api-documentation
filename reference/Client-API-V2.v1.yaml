@@ -133,9 +133,9 @@ paths:
                 timeSlotId:
                   type: number
                   description: 'If no time slot id provided, we will find the first open time slot'
-                features:
+                featureCodes:
                   $ref: '#/components/schemas/Features'
-                product:
+                service:
                   type: string
                   enum:
                     - SAME_DAY
@@ -242,6 +242,22 @@ paths:
       responses:
         '202':
           description: Accepted
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                      - UNABLE_TO_CANCEL
+                  reason:
+                    type: string
+                required:
+                  - code
+                  - reason
         '401':
           description: Unauthorized
           content:
@@ -269,22 +285,6 @@ paths:
                     type: string
                     enum:
                       - SHIPMENT_NOT_FOUND
-                  reason:
-                    type: string
-                required:
-                  - code
-                  - reason
-        '422':
-          description: Unprocessable Entity (WebDAV)
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: string
-                    enum:
-                      - UNABLE_TO_CANCEL
                   reason:
                     type: string
                 required:
@@ -382,8 +382,8 @@ paths:
       tags:
         - time slot
       responses:
-        '200':
-          description: OK
+        '201':
+          description: Created
           content:
             application/json:
               schema:
@@ -466,13 +466,39 @@ paths:
           description: Destination postal code
           required: true
     parameters: []
-  /serviceable-area:
-    put:
-      summary: Check if area is serviceable
-      operationId: put-serviceable-area
+  /serviceable-areas:
+    parameters: []
+    get:
+      summary: Check if a area is serviceable
+      operationId: get-serviceable-areas
       responses:
-        '202':
-          description: Accepted
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  links:
+                    $ref: '#/components/schemas/Links'
+                  area:
+                    $ref: '#/components/schemas/Area'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                      - UNSERVICEABLE_AREA
+                  reason:
+                    type: string
+                required:
+                  - code
+                  - reason
         '401':
           description: Unauthorized
           content:
@@ -489,41 +515,24 @@ paths:
                 required:
                   - code
                   - reason
-        '422':
-          description: Unprocessable Entity (WebDAV)
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: string
-                    enum:
-                      - UNSERVICEABLE_AREA
-                  reason:
-                    type: string
-                required:
-                  - code
-                  - reason
+      description: ''
       tags:
         - service
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                postalCode:
-                  type: string
-                  pattern: "\\d{4}([A-Z]{2})?"
-                country:
-                  type: string
-                  enum:
-                    - NL
-                    - BE
-              required:
-                - postalCode
-                - country
+      parameters:
+        - schema:
+            type: string
+            enum:
+              - NL
+              - BE
+          in: query
+          name: country
+          required: true
+        - schema:
+            type: string
+            pattern: "\\d{4}([A-Z]{2})?"
+          in: query
+          name: postalCode
+          required: true
   /webhooks:
     get:
       summary: List webhooks
@@ -563,6 +572,7 @@ paths:
                   - code
                   - reason
       operationId: get-webhooks
+      description: Header tokens will be masked.
     post:
       summary: Create webhook subscription
       operationId: post-webhooks
@@ -634,9 +644,11 @@ paths:
                     - onStateUpdate
                     - onCreation
                     - onCancellation
+                    - onReview
               required:
                 - url
                 - event
+      description: 'If no header token is provided, we will create a random token for you. Please write it down as this is the only time we will show the token unmasked.'
   '/webhooks/{webhookId}':
     parameters:
       - schema:
@@ -694,7 +706,7 @@ paths:
                   - code
                   - reason
       operationId: get-webhooks-webhookId
-      description: ''
+      description: Header tokens will be masked
       tags:
         - webhook
     delete:
@@ -793,10 +805,6 @@ components:
       properties:
         self:
           $ref: '#/components/schemas/Link'
-        first:
-          $ref: '#/components/schemas/Link'
-        last:
-          $ref: '#/components/schemas/Link'
         next:
           $ref: '#/components/schemas/Link'
         prev:
@@ -819,7 +827,7 @@ components:
       type: object
       properties:
         trunkrsNr:
-          type: string
+          type: number
           description: The Trunkrs Number is the main identifier for a shipment
         orderReference:
           type: string
@@ -838,10 +846,15 @@ components:
           $ref: '#/components/schemas/TimeSlot'
         state:
           $ref: '#/components/schemas/State'
-        features:
+        featureCodes:
           $ref: '#/components/schemas/Features'
-        product:
-          $ref: '#/components/schemas/Product'
+        service:
+          type: string
+          enum:
+            - SAME_DAY
+            - SAME_DAY_FOOD
+            - SAME_DAY_FROZEN_FOOD
+          default: SAME_DAY
       required:
         - trunkrsNr
         - orderReference
@@ -851,8 +864,8 @@ components:
         - parcels
         - timeSlot
         - state
-        - features
-        - product
+        - featureCodes
+        - service
     Label:
       title: Label
       type: object
@@ -894,6 +907,7 @@ components:
           type: string
       required:
         - name
+        - emailAddress
         - address
         - postalCode
         - city
@@ -907,7 +921,7 @@ components:
         articles:
           type: array
           items:
-            $ref: '#/components/schemas/Good'
+            $ref: '#/components/schemas/Product'
         weight:
           type: number
           description: Weight is provided in KG
@@ -931,8 +945,8 @@ components:
         depth:
           type: number
           description: Depth is provided in centimeters
-    Article:
-      title: Article
+    Product:
+      title: Product
       type: object
       description: ''
       properties:
@@ -951,7 +965,7 @@ components:
       type: object
       properties:
         id:
-          type: string
+          type: number
         merchant:
           $ref: '#/components/schemas/Location'
         cutOffTime:
@@ -962,21 +976,7 @@ components:
         deliveryWindow:
           $ref: '#/components/schemas/TimeWindow'
         serviceArea:
-          type: object
-          required:
-            - country
-            - postalCodesP3
-          properties:
-            country:
-              type: string
-              enum:
-                - NL
-                - BE
-            postalCodesP3:
-              type: array
-              description: Postal codes in 3-digit P3 format
-              items:
-                type: number
+          $ref: '#/components/schemas/Area'
       required:
         - id
         - merchant
@@ -1076,21 +1076,6 @@ components:
           type: boolean
         deliverInMailBox:
           type: boolean
-    Product:
-      title: Product
-      type: object
-      properties:
-        name:
-          type: string
-          enum:
-            - SAME_DAY
-            - SAME_DAY_FOOD
-            - SAME_DAY_FROZEN_FOOD
-        description:
-          type: string
-      required:
-        - name
-        - description
     Webhook:
       title: Webhook
       type: object
@@ -1114,6 +1099,7 @@ components:
             - onStateUpdate
             - onCreation
             - onCancellation
+            - onReview
         id:
           type: number
       required:
@@ -1121,6 +1107,22 @@ components:
         - header
         - event
         - id
+    Area:
+      title: Area
+      type: object
+      properties:
+        country:
+          type: string
+          enum:
+            - NL
+            - BE
+        region:
+          type: array
+          description: Usualy an array of 3 digit postal codes
+          items:
+            type: string
+      required:
+        - country
   securitySchemes:
     x-api-clientsecret:
       name: Client Secret
