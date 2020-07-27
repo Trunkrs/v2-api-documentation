@@ -918,7 +918,7 @@ components:
       properties:
         description:
           type: string
-        articles:
+        contents:
           type: array
           items:
             $ref: '#/components/schemas/Product'
