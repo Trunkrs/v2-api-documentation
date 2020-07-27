@@ -460,7 +460,7 @@ paths:
           description: The destination country
         - schema:
             type: string
-            pattern: "^\\d{4}[A-Z]{2}"
+            pattern: '^\d{4}[A-Z]{2}'
           in: query
           name: postalCode
           description: Destination postal code
@@ -529,7 +529,7 @@ paths:
           required: true
         - schema:
             type: string
-            pattern: "\\d{4}([A-Z]{2})?"
+            pattern: '\d{4}([A-Z]{2})?'
           in: query
           name: postalCode
           required: true
@@ -794,7 +794,7 @@ paths:
                 required:
                   - code
                   - reason
-      description: "Fire's dummy data to the subscribed url"
+      description: Fire's dummy data to the subscribed url
       tags:
         - webhook
 components:
@@ -872,10 +872,10 @@ components:
       properties:
         pdf:
           type: string
-          description: 'Link to the PDF. Size is 6" x 4"'
+          description: Link to the PDF. Size is 6" x 4"
         zpl:
           type: string
-          description: 'Label in Zebra format. Size is 6" x 4" at 203DPI'
+          description: Label in Zebra format. Size is 6" x 4" at 203DPI
       required:
         - pdf
         - zpl
@@ -1072,10 +1072,19 @@ components:
           description: Dont deliver at neighbours (extra costs are involved)
         noSignature:
           type: boolean
-        foodDelivery:
-          type: boolean
         deliverInMailBox:
           type: boolean
+        maxAttempts:
+          type: number
+          default: 3
+          maximum: 3
+          description: Max number of delivery attempts (may not exceed 3)
+        maxTimeOutsideFreezer:
+          type: number
+          minimum: 10
+          maximum: 30
+          default: 15
+          description: Max cummalative time (in hours) the shipment can be outside of the freezer before it needs to be returned
     Webhook:
       title: Webhook
       type: object
