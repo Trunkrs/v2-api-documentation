@@ -1077,7 +1077,7 @@ components:
           type: boolean
         deliverInMailBox:
           type: boolean
-        maxAttempts:
+        maxDeliveryAttempts:
           type: number
           default: 3
           maximum: 3
