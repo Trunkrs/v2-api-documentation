@@ -1046,6 +1046,7 @@ components:
                 - DRIVER
                 - CUSTOMER
                 - MERCHANT
+                - NEIGHBOR
             name:
               type: string
             address:
