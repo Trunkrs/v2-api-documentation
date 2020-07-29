@@ -1058,6 +1058,8 @@ components:
               enum:
                 - NL
                 - BE
+            postalCode:
+              type: string
           required:
             - type
             - name
