@@ -382,8 +382,8 @@ paths:
       tags:
         - time slot
       responses:
-        '201':
-          description: Created
+        '200':
+          description: OK
           content:
             application/json:
               schema:
@@ -415,6 +415,22 @@ paths:
                   - code
                   - reason
           headers: {}
+        '422':
+          description: Unprocessable Entity (WebDAV)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                      - INVALID_REQUEST
+                  reason:
+                    type: string
+                required:
+                  - code
+                  - reason
         '429':
           description: Too Many Requests
           content:
