@@ -939,8 +939,7 @@ components:
           items:
             $ref: '#/components/schemas/Product'
         weight:
-          type: number
-          description: Weight is provided in KG
+          $ref: '#/components/schemas/Measurement'
         size:
           $ref: '#/components/schemas/Size'
         reference:
@@ -953,14 +952,11 @@ components:
       type: object
       properties:
         width:
-          type: number
-          description: Width is provided in centimeters
+          $ref: '#/components/schemas/Measurement'
         height:
-          type: number
-          description: Height is provided in centimeters
+          $ref: '#/components/schemas/Measurement'
         depth:
-          type: number
-          description: Depth is provided in centimeters
+          $ref: '#/components/schemas/Measurement'
     Product:
       title: Product
       type: object
@@ -1151,6 +1147,17 @@ components:
             type: string
       required:
         - country
+    Measurement:
+      title: Measurement
+      type: object
+      properties:
+        value:
+          type: number
+        unit:
+          type: string
+          enum:
+            - cm
+            - kg
   securitySchemes:
     x-api-clientsecret:
       name: Client Secret
