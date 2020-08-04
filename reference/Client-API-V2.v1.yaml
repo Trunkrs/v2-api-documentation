@@ -1155,9 +1155,15 @@ components:
           type: number
         unit:
           type: string
+          description: 'Unit, for weight we support g and kg, for size cm and m'
           enum:
             - cm
+            - m
+            - g
             - kg
+      required:
+        - value
+        - unit
   securitySchemes:
     x-api-clientsecret:
       name: Client Secret
