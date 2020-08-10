@@ -1165,8 +1165,8 @@ components:
         - value
         - unit
   securitySchemes:
-    x-api-clientsecret:
-      name: Client Secret
+    x-api-key:
+      name: API Key for merchant
       type: apiKey
       in: header
 security:
