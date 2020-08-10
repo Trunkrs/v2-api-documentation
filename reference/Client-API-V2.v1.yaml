@@ -1170,4 +1170,4 @@ components:
       type: apiKey
       in: header
 security:
-  - x-api-clientsecret: []
+  - x-api-key: []
