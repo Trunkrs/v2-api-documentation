@@ -548,7 +548,6 @@ paths:
             pattern: '\d{4}([A-Z]{2})'
           in: query
           name: postalCode
-          required: true
   /webhooks:
     get:
       summary: List webhooks
