@@ -531,6 +531,23 @@ paths:
                 required:
                   - code
                   - reason
+        '422':
+          description: Unprocessable Entity (WebDAV)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                      - UnprocessableEntityError
+                    default: UnprocessableEntityError
+                  reason:
+                    type: string
+                required:
+                  - code
+                  - reason
       description: ''
       tags:
         - service
