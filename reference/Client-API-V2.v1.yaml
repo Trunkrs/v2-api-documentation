@@ -540,9 +540,9 @@ paths:
                 properties:
                   code:
                     type: string
+                    default: VALIDATION_ERROR
                     enum:
-                      - UnprocessableEntityError
-                    default: UnprocessableEntityError
+                      - VALIDATION_ERROR
                   reason:
                     type: string
                 required:
