@@ -540,9 +540,9 @@ paths:
                 properties:
                   code:
                     type: string
-                    default: VALIDATION_ERROR
+                    default: INVALID_REQUEST
                     enum:
-                      - VALIDATION_ERROR
+                      - INVALID_REQUEST
                   reason:
                     type: string
                 required:
