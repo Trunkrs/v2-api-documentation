@@ -950,6 +950,7 @@ components:
     Parcel:
       title: Parcel
       type: object
+      description: Weight is only required in BE
       properties:
         description:
           type: string
