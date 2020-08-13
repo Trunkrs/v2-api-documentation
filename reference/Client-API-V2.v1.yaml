@@ -6,7 +6,10 @@ info:
     name: Hidde Stokvis
     url: 'https://trunkrs.nl'
     email: tech.support@trunkrs.nl
-  description: Customer facing API version 2
+  description: |-
+    Customer facing API version 2
+
+    **This API is not live yet, but will be released in September**
 servers:
   - url: 'https://api.trunkrs.nl/api/v2'
     description: production
