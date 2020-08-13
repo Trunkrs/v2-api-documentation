@@ -731,7 +731,7 @@ paths:
                   code:
                     type: string
                     enum:
-                      - NOT_FOUND
+                      - WEBHOOK_NOT_FOUND
                   reason:
                     type: string
                 required:
@@ -773,7 +773,7 @@ paths:
                   code:
                     type: string
                     enum:
-                      - NOT_FOUND
+                      - WEBHOOK_NOT_FOUND
                   reason:
                     type: string
                 required:
@@ -820,7 +820,7 @@ paths:
                   code:
                     type: string
                     enum:
-                      - NOT_FOUND
+                      - WEBHOOK_NOT_FOUND
                   reason:
                     type: string
                 required:
