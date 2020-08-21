@@ -607,7 +607,7 @@ paths:
                   - code
                   - reason
       operationId: get-webhooks
-      description: Header tokens will be masked.
+      description: 'Header tokens will be masked. For a preview of the webhooks body please check [webhook body](https://docs.trunkrs.nl/docs/v2-api-documentation/reference/Client-API-V2.v1.yaml/components/schemas/WebhookBody)'
     post:
       summary: Create webhook subscription
       operationId: post-webhooks
@@ -683,7 +683,7 @@ paths:
               required:
                 - url
                 - event
-      description: 'If no header token is provided, we will create a random token for you. Please write it down as this is the only time we will show the token unmasked.'
+      description: 'If no header token is provided, we will create a random token for you. Please write it down as this is the only time we will show the token unmasked. For a preview of the webhooks body please check [webhook body](https://docs.trunkrs.nl/docs/v2-api-documentation/reference/Client-API-V2.v1.yaml/components/schemas/WebhookBody)'
   '/webhooks/{webhookId}':
     parameters:
       - schema:
@@ -829,7 +829,7 @@ paths:
                 required:
                   - code
                   - reason
-      description: Fire's dummy data to the subscribed url
+      description: 'Fire''s dummy data to the subscribed url. For a preview of the webhooks body please check [webhook body](https://docs.trunkrs.nl/docs/v2-api-documentation/reference/Client-API-V2.v1.yaml/components/schemas/WebhookBody)'
       tags:
         - webhook
 components:
@@ -1184,12 +1184,12 @@ components:
       required:
         - value
         - unit
-    WebhookResponse:
-      title: WebhookResponse
+    WebhookBody:
+      title: Webhook Body
       type: object
       x-tags:
         - webhook
-      description: ''
+      description: The body of webhooks fired off by our system.
       properties:
         count:
           type: number
