@@ -1184,6 +1184,44 @@ components:
       required:
         - value
         - unit
+    WebhookResponse:
+      title: WebhookResponse
+      type: object
+      x-tags:
+        - webhook
+      description: ''
+      properties:
+        count:
+          type: number
+          description: The number of triggered webhooks
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookEvent'
+      required:
+        - count
+        - events
+    WebhookEvent:
+      title: WebhookEvent
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - onStateUpdate
+            - onCreation
+            - onCancellation
+            - onReview
+        recordedAt:
+          type: string
+          format: date-time
+        data:
+          oneOf:
+            - $ref: '#/components/schemas/Shipment'
+            - $ref: '#/components/schemas/State'
+      required:
+        - type
+        - recordedAt
   securitySchemes:
     x-api-key:
       name: API Key for merchant
