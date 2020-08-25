@@ -1216,9 +1216,14 @@ components:
           type: string
           format: date-time
         data:
-          oneOf:
-            - $ref: '#/components/schemas/Shipment'
-            - $ref: '#/components/schemas/State'
+          type: object
+          properties:
+            trunkrsNr:
+              type: number
+            link:
+              $ref: '#/components/schemas/Link'
+            state:
+              $ref: '#/components/schemas/State'
       required:
         - type
         - recordedAt
