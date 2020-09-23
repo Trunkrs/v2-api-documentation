@@ -42,7 +42,7 @@ paths:
         - schema:
             type: string
             example: 'recipient,-trunkrs_nr'
-            default: '-trunkrs_nr'
+            default: '-trunkrsNr'
             pattern: '([a-zA-Z_-]+),?'
           in: query
           name: sort
