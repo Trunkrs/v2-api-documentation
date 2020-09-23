@@ -1229,7 +1229,7 @@ components:
         - recordedAt
   securitySchemes:
     x-api-key:
-      name: API Key for merchant
+      name: x-api-key
       type: apiKey
       in: header
 security:
