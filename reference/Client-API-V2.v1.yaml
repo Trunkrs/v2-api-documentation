@@ -29,7 +29,7 @@ paths:
             default: 0
             minimum: 0
           in: query
-          name: 'page[offset]'
+          name: offset
           description: A number of shipments to offset when fetching
         - schema:
             type: number
@@ -37,7 +37,7 @@ paths:
             minimum: 0
             maximum: 100
           in: query
-          name: 'page[limit]'
+          name: limit
           description: Limit the results to this number
         - schema:
             type: string
