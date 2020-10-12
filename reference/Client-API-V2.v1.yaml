@@ -9,7 +9,7 @@ info:
   description: |-
     Customer facing API version 2
 
-    **This API is not live yet, but will be released in September**
+    This API has replaced the V1.0 API and should be used as of now.
 servers:
   - url: 'https://api.trunkrs.nl/api/v2'
     description: production
