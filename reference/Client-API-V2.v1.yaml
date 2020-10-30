@@ -79,7 +79,9 @@ paths:
                   links:
                     $ref: '#/components/schemas/Links'
                   data:
-                    $ref: '#/components/schemas/Shipment'
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Shipment'
         '401':
           description: Unauthorized
           content:
