@@ -1053,6 +1053,11 @@ components:
             - EXCEPTION_SHIPMENT_LOST
             - EXCEPTION_SHIPMENT_CANCELLED_BY_SENDER
             - EXCEPTION_SHIPMENT_CANCELLED_BY_TRUNKRS
+            - EXCEPTION_SHIPMENT_INVESTIGATE
+            - RETURN_SHIPMENT_TO_SENDER
+            - RETURN_ASSIGNED_TO_PICKUP
+            - RETURN_ACCEPTED_BY_PICKUP_DRIVER
+            - RETURN_ACCEPTED_BY_SENDER
         reasonCode:
           type: string
           enum:
