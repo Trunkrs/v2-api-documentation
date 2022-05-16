@@ -381,6 +381,92 @@ paths:
         Get the state for a specific shipment
 
         **this endpoint is rate limited to 10 requests per second**
+
+        *Currently this endpoint is not returning the right response on production. As we have customers who are already using the "wrong" response, this will require a migration to correct. We have therefore created a new endpoint /shipments/{trunkrsNr}/status*
+      x-internal: false
+  '/shipments/{trunkrsNr}/status':
+    parameters:
+      - schema:
+          type: string
+        name: trunkrsNr
+        in: path
+        required: true
+    get:
+      summary: Get status for specific shipment
+      tags:
+        - shipment
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  links:
+                    $ref: '#/components/schemas/Links'
+                  data:
+                    type: object
+                    properties:
+                      trunkrsNr:
+                        type: string
+                      state:
+                        $ref: '#/components/schemas/State'
+                    required:
+                      - trunkrsNr
+                      - state
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                      - UNAUTHORIZED
+                  reason:
+                    type: string
+                required:
+                  - code
+                  - reason
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                      - SHIPMENT_NOT_FOUND
+                  reason:
+                    type: string
+                required:
+                  - code
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                      - TOO_MANY_REQUESTS
+                  reason:
+                    type: string
+                required:
+                  - code
+                  - reason
+      operationId: get-shipments-trunkrsNr-state
+      description: |-
+        Get the state for a specific shipment
+
+        **this endpoint is rate limited to 10 requests per second**
   /timeslots/:
     get:
       summary: List time slots
