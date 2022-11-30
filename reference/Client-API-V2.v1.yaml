@@ -1212,7 +1212,10 @@ components:
           minimum: 10
           maximum: 30
           default: 15
-          description: Max cummalative time (in hours) the shipment can be outside of the freezer before it needs to be returned
+          description: Max cummalative time (in hours) the shipment can be outside of the freezer before it needs to be returned.
+        requireStrictProofOfDelivery:
+          type: boolean
+          description: Sets whether strict proof of delivery is required for this shipment. This setting involves extra costs, please discuss with your account manager.
     Webhook:
       title: Webhook
       type: object
