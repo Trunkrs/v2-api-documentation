@@ -1213,6 +1213,12 @@ components:
           maximum: 30
           default: 15
           description: Max cummalative time (in hours) the shipment can be outside of the freezer before it needs to be returned
+        requireProofOfDelivery:
+          type: boolean
+          description: Sets whether strict proof of delivery is required for this shipment. This setting involves extra costs, please discuss with your account manager.
+        requireAgeCheck:
+          type: boolean
+          description: If enabled, requires the driver to check wether the recipient is at the right age or not.
     Webhook:
       title: Webhook
       type: object
