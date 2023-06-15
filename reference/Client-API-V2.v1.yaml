@@ -41,12 +41,34 @@ paths:
           description: Limit the results to this number
         - schema:
             type: string
-            example: 'recipient,-trunkrs_nr'
+            example: 'recipient.name,-trunkrsNr'
             default: '-trunkrsNr'
-            pattern: '([a-zA-Z_-]+),?'
+            enum: 
+              - 'trunkrsNr'
+              - '-trunkrsNr'
+              - 'recipient.name'
+              - '-recipient.name'
+              - 'orderReference'
+              - '-orderReference'
+              - 'sender.companyName'
+              - '-sender.companyName'
+              - 'sender.name'
+              - '-sender.name'
+              - 'timeSlot.id'
+              - '-timeSlot.id'
+              - 'timeSlot.cutOffTime'
+              - '-timeSlot.cutOffTime'
+              - 'state.code'
+              - '-state.code'
+              - 'state.reasonCode'
+              - '-state.reasonCode'
+              - 'state.timeStamp'
+              - '-state.timeStamp'
+              - 'service'
+              - '-service'
           in: query
           name: sort
-          description: comma seperated list to sort fields by (prepend with - for decending)
+          description: Comma-separated list to sort fields by (prepend with - for descending order)
       responses:
         '200':
           description: OK
