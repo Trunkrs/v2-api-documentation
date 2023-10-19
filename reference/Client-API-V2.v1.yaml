@@ -3,7 +3,7 @@ info:
   title: Client API
   version: '2.0'
   contact:
-    name: Trunkrs Tech Support
+    name: Hidde Stokvis
     url: 'https://trunkrs.nl'
     email: tech.support@trunkrs.nl
   description: |-
@@ -22,7 +22,7 @@ paths:
       tags:
         - shipment
       operationId: get-shipment
-      description: List all your shipments
+      description: List your shipments
       parameters:
         - schema:
             type: number
@@ -33,7 +33,7 @@ paths:
           description: A number of shipments to offset when fetching
         - schema:
             type: number
-            default: 0
+            default: 25
             minimum: 0
             maximum: 100
           in: query
@@ -43,28 +43,28 @@ paths:
             type: string
             example: 'recipient.name,-trunkrsNr'
             default: '-trunkrsNr'
-            enum: 
-              - 'trunkrsNr'
+            enum:
+              - trunkrsNr
               - '-trunkrsNr'
-              - 'recipient.name'
+              - recipient.name
               - '-recipient.name'
-              - 'orderReference'
+              - orderReference
               - '-orderReference'
-              - 'sender.companyName'
+              - sender.companyName
               - '-sender.companyName'
-              - 'sender.name'
+              - sender.name
               - '-sender.name'
-              - 'timeSlot.id'
+              - timeSlot.id
               - '-timeSlot.id'
-              - 'timeSlot.cutOffTime'
+              - timeSlot.cutOffTime
               - '-timeSlot.cutOffTime'
-              - 'state.code'
+              - state.code
               - '-state.code'
-              - 'state.reasonCode'
+              - state.reasonCode
               - '-state.reasonCode'
-              - 'state.timeStamp'
+              - state.timeStamp
               - '-state.timeStamp'
-              - 'service'
+              - service
               - '-service'
           in: query
           name: sort
@@ -1237,10 +1237,10 @@ components:
           description: Max cummalative time (in hours) the shipment can be outside of the freezer before it needs to be returned
         requireProofOfDelivery:
           type: boolean
-          description: Sets whether strict proof of delivery is required for this shipment. This setting involves extra costs, please discuss with your account manager.
+          description: 'Sets whether strict proof of delivery is required for this shipment. This setting involves extra costs, please discuss with your account manager.'
         requireAgeCheck:
           type: boolean
-          description: If enabled, requires the driver to check wether the recipient is at the right age or not.
+          description: 'If enabled, requires the driver to check wether the recipient is at the right age or not.'
     Webhook:
       title: Webhook
       type: object
