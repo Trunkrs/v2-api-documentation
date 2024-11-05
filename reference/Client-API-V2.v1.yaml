@@ -145,6 +145,9 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - recipient
+                - parcel
               properties:
                 orderReference:
                   type: string
@@ -166,12 +169,10 @@ paths:
                   type: string
                   enum:
                     - SAME_DAY
-                    - SAME_DAY_FOOD
                     - SAME_DAY_FROZEN_FOOD
                   default: SAME_DAY
-              required:
-                - recipient
-                - parcel
+                  description: |
+                    Specifies the service level of this parcel. To use the freezer service, set the value to SAME_DAY_FROZEN. You may also request to have this value set as the default for your shipments, eliminating the need to specify it each time. Please contact us via email for more information or to enable this feature.
         description: |-
           The order reference needs to be a completely unique number. We recommend pre-pending it with your company name or a shortcut of your company name. Alternatively it can be used as a barcode for custom labels.
 
@@ -577,6 +578,8 @@ paths:
         List all available time slots for your account
 
         **this endpoint is rate limited to 10 requests per second**
+
+        **As of November 5, 2024, the `collectionWindows` parameter on the response body has been officially deprecated and is no longer considered by the endpoint. To ensure your integrations function correctly, please remove any references to collectionWindows from your API requests. If you have any questions or need assistance, please contact our support team.**
       parameters:
         - schema:
             type: string
@@ -1105,6 +1108,12 @@ components:
     TimeSlot:
       title: TimeSlot
       type: object
+      required:
+        - id
+        - merchant
+        - cutOffTime
+        - deliveryWindow
+        - serviceArea
       properties:
         id:
           type: number
@@ -1113,19 +1122,10 @@ components:
         cutOffTime:
           type: string
           format: date-time
-        collectionWindow:
-          $ref: '#/components/schemas/TimeWindow'
         deliveryWindow:
           $ref: '#/components/schemas/TimeWindow'
         serviceArea:
           $ref: '#/components/schemas/Area'
-      required:
-        - id
-        - merchant
-        - cutOffTime
-        - collectionWindow
-        - deliveryWindow
-        - serviceArea
     TimeWindow:
       title: TimeWindow
       type: object
