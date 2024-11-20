@@ -172,7 +172,7 @@ paths:
                     - SAME_DAY_FROZEN_FOOD
                   default: SAME_DAY
                   description: |
-                    Specifies the service level of this parcel. To use the freezer service, set the value to SAME_DAY_FROZEN. You may also request to have this value set as the default for your shipments, eliminating the need to specify it each time. Please contact us via email for more information or to enable this feature.
+                    Specifies the service level of this parcel. To use the freezer service, set the value to SAME_DAY_FROZEN_FOOD. You may also request to have this value set as the default for your shipments, eliminating the need to specify it each time. Please contact us via email for more information or to enable this feature.
         description: |-
           The order reference needs to be a completely unique number. We recommend pre-pending it with your company name or a shortcut of your company name. Alternatively it can be used as a barcode for custom labels.
 
